@@ -59,7 +59,7 @@ require 'cek.php';
                             <div class="card-header">
                                   <!-- Button to Open the Modal -->
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-                                        Tambah Barang
+                                        Ambil Barang
                                     </button>
                             </div>
                             <div class="card-body">
@@ -67,19 +67,35 @@ require 'cek.php';
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                          <thead>
                                             <tr>
-                                                <th>No</th>
+                                                <th>Tanggal</th>
                                                 <th>Nama Barang</th>
-                                                <th>Deskripsi</th>
-                                                <th>Stock</th>
+                                                <th>Jumlah</th>
+                                                <th>No Tabung</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+
+                                        <!-- tr nya -->
+                                        <?php
+                                            $ambilsemuadatastock = mysqli_query($conn,'select * from keluar k, stock s where s.idbarang = k.idbarang');
+                                            while($data=mysqli_fetch_array($ambilsemuadatastock)){
+                                              $tanggal = $data['tanggal'];
+                                                $namabarang = $data['namabarang'];
+                                                $qty = $data['qty'];
+                                                $notabung = $data['notabung'];
+                                            ?>
+
+
                                             <tr>
-                                                <td>Tiger Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
+                                                <td><?=$tanggal;?></td>
+                                                <td><?=$namabarang;?></td>
+                                                <td><?=$qty;?></td>
+                                                <td><?=$notabung;?></td>
                                             </tr>
+                                            <?php
+                                            };
+
+                                            ?>
                                         </tbody>
                                     </table>
                                 </div>
