@@ -45,7 +45,7 @@ require 'cek.php';
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">MetalArt Astra Indonesia</div>
-                        Ryan P
+                        Ryan Pratama | 240040
                     </div>
                 </nav>
             </div>
