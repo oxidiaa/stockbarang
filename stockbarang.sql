@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 10, 2025 at 11:57 PM
+-- Generation Time: Feb 11, 2025 at 08:51 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -31,8 +31,20 @@ CREATE TABLE `keluar` (
   `idkeluar` int(11) NOT NULL,
   `idbarang` int(11) NOT NULL,
   `tanggal` timestamp NOT NULL DEFAULT current_timestamp(),
-  `penerima` varchar(25) NOT NULL
+  `notabung` varchar(25) NOT NULL,
+  `qty` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `keluar`
+--
+
+INSERT INTO `keluar` (`idkeluar`, `idbarang`, `tanggal`, `notabung`, `qty`) VALUES
+(1, 2, '2025-02-11 19:32:14', 'ryan', 2),
+(2, 2, '2025-02-11 19:33:08', 'rayeun', 2),
+(3, 3, '2025-02-11 19:36:14', 'rayeun', 1),
+(4, 3, '2025-02-11 19:48:20', 'ryan', 2),
+(5, 3, '2025-02-11 19:50:02', 'rayeun', 4);
 
 -- --------------------------------------------------------
 
@@ -64,8 +76,23 @@ CREATE TABLE `masuk` (
   `idmasuk` int(11) NOT NULL,
   `idbarang` int(11) NOT NULL,
   `tanggal` timestamp NOT NULL DEFAULT current_timestamp(),
-  `keterangan` varchar(25) NOT NULL
+  `keterangan` varchar(25) NOT NULL,
+  `qty` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `masuk`
+--
+
+INSERT INTO `masuk` (`idmasuk`, `idbarang`, `tanggal`, `keterangan`, `qty`) VALUES
+(0, 2, '2025-02-11 19:17:10', '32520', 0),
+(0, 2, '2025-02-11 19:32:38', 'rayeun', 0),
+(0, 3, '2025-02-11 19:39:45', 'ryan', 0),
+(0, 3, '2025-02-11 19:41:26', 'ryan', 0),
+(0, 3, '2025-02-11 19:45:45', 'ryan', 6),
+(0, 3, '2025-02-11 19:46:12', 'rayeun', 22),
+(0, 3, '2025-02-11 19:48:02', 'ryan', 5),
+(0, 3, '2025-02-11 19:49:50', 'rayeun', 7);
 
 -- --------------------------------------------------------
 
@@ -81,8 +108,21 @@ CREATE TABLE `stock` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `stock`
+--
+
+INSERT INTO `stock` (`idbarang`, `namabarang`, `deskripsi`, `stock`) VALUES
+(3, 'Argon', 'gas', 3);
+
+--
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `keluar`
+--
+ALTER TABLE `keluar`
+  ADD PRIMARY KEY (`idkeluar`);
 
 --
 -- Indexes for table `login`
@@ -101,6 +141,12 @@ ALTER TABLE `stock`
 --
 
 --
+-- AUTO_INCREMENT for table `keluar`
+--
+ALTER TABLE `keluar`
+  MODIFY `idkeluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `login`
 --
 ALTER TABLE `login`
@@ -110,7 +156,7 @@ ALTER TABLE `login`
 -- AUTO_INCREMENT for table `stock`
 --
 ALTER TABLE `stock`
-  MODIFY `idbarang` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idbarang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
