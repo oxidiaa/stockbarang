@@ -80,6 +80,7 @@ require 'cek.php';
                                             $ambilsemuadatastock = mysqli_query($conn,"select * from masuk m, stock s where s.idbarang = m.idbarang");
                                             while($data=mysqli_fetch_array($ambilsemuadatastock)){
                                                 $idb = $data['idbarang'];
+                                                $idm = $data['idmasuk'];
                                                 $tanggal = $data['tanggal'];
                                                 $namabarang = $data['namabarang'];
                                                 $qty = $data['qty'];
@@ -116,12 +117,13 @@ require 'cek.php';
                                                         <!-- Modal body -->
                                                         <form method="post">
                                                         <div class="modal-body">
-                                                        <input type="text" name="namabarang" value="<?=$namabarang;?>" class="form-control" required>
+                                                        <input type="text" name="keterangan" value="<?=$keterangan;?>" class="form-control" required>
                                                         <br>
-                                                        <input type="text" name="deskripsi" value="<?=$keterangan;?>" class="form-control" required>
+                                                        <input type="number" name="qty" value="<?=$qty;?>" class="form-control" required>
                                                         <br>
                                                         <input type="hidden" name="idb" value="<?=$idb;?>">
-                                                        <button type="submit" class="btn btn-primary" name="updatedatabarang">Submit</button>
+                                                        <input type="hidden" name="idm" value="<?=$idm;?>">
+                                                        <button type="submit" class="btn btn-primary" name="updatedatabarangmasuk">Submit</button>
                                                         </div>
                                                         </form>
 
@@ -147,9 +149,10 @@ require 'cek.php';
                                                         <div class="modal-body">
                                                         Apakah Anda yakin ingin menghapus <?=$namabarang;?>?
                                                         <input type="hidden" name="idb" value="<?=$idb;?>">
+                                                        <input type="hidden" name="kty" value="<?=$qty;?>">
                                                         <br>
                                                         <br>
-                                                        <button type="submit" class="btn btn-danger" name="hapusbarang">Hapus</button>
+                                                        <button type="submit" class="btn btn-danger" name="hapusbarangmasuk">Hapus</button>
                                                         </div>
                                                         </form>
 
