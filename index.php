@@ -148,8 +148,6 @@ require 'cek.php';
                                                         <input type="hidden" name="idb" value="<?=$idb;?>">
                                                         <br>
                                                         <br>
-                                                        <input type="text" name="deskripsi" value="<?=$deskripsi;?>" class="form-control" required>
-                                                        <br>
                                                         <button type="submit" class="btn btn-danger" name="hapusbarang">Hapus</button>
                                                         </div>
                                                         </form>
