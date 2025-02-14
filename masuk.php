@@ -144,12 +144,13 @@ require 'cek.php';
                                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                         </div>
                                                         
-                                                        <!-- Modal body -->
+                                                        <!-- Modal body --> 
                                                         <form method="post">
                                                         <div class="modal-body">
                                                         Apakah Anda yakin ingin menghapus <?=$namabarang;?>?
                                                         <input type="hidden" name="idb" value="<?=$idb;?>">
                                                         <input type="hidden" name="kty" value="<?=$qty;?>">
+                                                        <input type="hidden" name="idm" value="<?=$idm;?>">
                                                         <br>
                                                         <br>
                                                         <button type="submit" class="btn btn-danger" name="hapusbarangmasuk">Hapus</button>
@@ -226,7 +227,7 @@ require 'cek.php';
             <option value="<?=$idbarangnya;?>"><?=$namabarangnya;?></option>
 
             <?php
-                }
+                };
             ?>
         </select>
         <br>
