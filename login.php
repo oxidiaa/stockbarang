@@ -1,31 +1,37 @@
 <?php
-require 'function.php';
+session_start(); // HARUS ADA untuk memastikan sesi berjalan
+require 'function.php'; // Pastikan koneksi database sudah tersedia
 
-//Cek login, terdaftar atau tidak
 if(isset($_POST['login'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    //cocokkan dengan database
-    $cekdatabase = mysqli_query($conn, "SELECT * FROM login where email='$email' and password='$password'");
-    //hitung jumlah data
+    // Cek apakah email ada di database
+    $cekdatabase = mysqli_query($conn, "SELECT * FROM login WHERE email='$email'");
+    $data = mysqli_fetch_array($cekdatabase);
     $hitung = mysqli_num_rows($cekdatabase);
 
-    if($hitung>0){
-        $_SESSION['log'] = 'True';
-        header('location:index.php');
+    if($hitung > 0) {
+        // Pastikan password cocok (tanpa hash)
+        if ($password == $data['password']) {
+            $_SESSION['log'] = true;
+            header('location:index.php');
+            exit;
+        } else {
+            echo "<script>alert('Password salah!'); window.location='login.php';</script>";
+        }
     } else {
-        header('location:login.php');
-    };
-};
+        echo "<script>alert('Email tidak ditemukan!'); window.location='login.php';</script>";
+    }
+}
 
+// Jika sudah login, langsung ke index.php
 if (isset($_SESSION['log'])) {
     header('location:index.php');
     exit;
 }
-
-
 ?>
+
 
 
 <!DOCTYPE html>
