@@ -80,8 +80,8 @@ require 'function.php';
                     </div>
                 </nav>
             </div>
-
-            <div class="row"> <!-- Tambahkan ROW agar elemen tersusun secara vertikal -->
+<div class="container">
+            <div class="row mt-4"> <!-- Tambahkan ROW agar elemen tersusun secara vertikal -->
     <div class="col-12 mb-4"> <!-- Card 1 -->
         <div class="card d-flex flex-row p-4 align-items-center w-100">
             <img src="https://thumbs.dreamstime.com/z/gas-cylinders-tanks-set-gas-cylinders-tanks-realistic-set-flammable-gas-symbols-isolated-vector-illustration-288988149.jpg" 

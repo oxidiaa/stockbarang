@@ -85,7 +85,7 @@ require 'cek.php';
                                               $tanggal = $data['tanggal'];
                                                 $namabarang = $data['namabarang'];
                                                 $qty = $data['qty'];
-                                                $notabung = $data['notabung'];
+                                                $penerima = $data['penerima'];
                                             ?>
 
 
@@ -93,7 +93,7 @@ require 'cek.php';
                                                 <td><?=$tanggal;?></td>
                                                 <td><?=$namabarang;?></td>
                                                 <td><?=$qty;?></td>
-                                                <td><?=$notabung;?></td>
+                                                <td><?=$penerima;?></td>
                                             </tr>
                                             <?php
                                             };
@@ -162,7 +162,7 @@ require 'cek.php';
         <br>
         <input type="number" name="qty" placeholder="Quantity" class="form-control" required>
          <br>
-         <input type="text" name="notabung" placeholder="No Tabung" class="form-control" required>
+         <input type="text" name="penerima" placeholder="Penerima" class="form-control" required>
          <br>
         <button type="submit" class="btn btn-primary" name="addbarangkeluar">Submit</button>
         </div>

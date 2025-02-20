@@ -237,7 +237,7 @@ require 'cek.php';
         <br>
         <input type="number" name="qty" placeholder="Quantity" class="form-control" required>
          <br>
-        <input type="text" name="notabung" class="form-control" placeholder="No Tabung" required>
+        <input type="text" name="penerima" class="form-control" placeholder="Penerima" required>
         <br>
         <button type="submit" class="btn btn-primary" name="barangmasuk">Submit</button>
         </div>
