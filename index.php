@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'function.php';
 ?>
 <!DOCTYPE html>
@@ -52,27 +53,37 @@ require 'function.php';
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
-                        <div class="nav">   
-                            <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="index.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Beranda 
-                            </a>
-                            <a class="nav-link" href="stock.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Stock Barang
-                            </a>
-                            <a class="nav-link" href="masuk.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Barang Masuk
-                            <a class="nav-link" href="keluar.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Barang Keluar
-                            </a>
-                            <a class="nav-link" href="logout.php">
-                                Logout
-                            </a>
-                        </div> 
+                    <div class="nav">   
+    <div class="sb-sidenav-menu-heading">Core</div>
+
+    <?php if ($_SESSION['role'] == 'admin') { ?>
+        <a class="nav-link" href="index.php">
+            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+            Beranda 
+        </a>
+        <a class="nav-link" href="stock.php">
+            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+            Stock Barang
+        </a>
+        <a class="nav-link" href="masuk.php">
+            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+            Barang Masuk
+        </a>
+        <a class="nav-link" href="keluar.php">
+            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+            Barang Keluar
+        </a>
+    <?php } ?>
+
+    <a class="nav-link" href="solar.php">
+        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+        Solar
+    </a>
+    <a class="nav-link" href="logout.php">
+        Logout
+    </a>
+</div>
+
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">MetalArt Astra Indonesia</div>
@@ -101,7 +112,7 @@ require 'function.php';
             <div class="ms-4 flex-grow-1">
                 <h4 class="mt-3">Solar</h4>
                 <p class="card-subtitle mt-2 mb-3">Klik bawah untuk pengambilan item di Area Solar.</p>
-                <a href="keluar.php" class="btn btn-primary">Solar</a>
+                <a href="solar.php" class="btn btn-primary">Solar</a>
             </div>
         </div>
     </div>

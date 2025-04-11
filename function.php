@@ -1,4 +1,7 @@
 <?php
+date_default_timezone_set('Asia/Jakarta');
+
+
 
 //Membuat koneksi ke database
 $conn = mysqli_connect("localhost","root","","stockbarang");
@@ -162,6 +165,29 @@ if(isset($_POST['hapusbarangmasuk'])){
         header('location:masuk.php');
     }
 }
+
+
+
+// Menyimpan data solar keluar
+if (isset($_POST['addsolar'])) {
+    $forklift = $_POST['forklift'];
+    $user = $_POST['user'];
+    $sebelum = (float)str_replace(',', '.', $_POST['sebelum']);
+    $sesudah = (float)str_replace(',', '.', $_POST['sesudah']);
+    $tanggal = date('Y-m-d H:i:s');
+
+    $total = abs($sebelum - $sesudah); // Selalu hasil positif
+
+    $insert = mysqli_query($conn, "INSERT INTO solar_keluar (tanggal, forklift, user, sebelum, sesudah, total) VALUES ('$tanggal', '$forklift', '$user', '$sebelum', '$sesudah', '$total')");
+
+    if ($insert) {
+        header('location:solar.php');
+    } else {
+        echo "Gagal menyimpan data solar.";
+    }
+}
+
+
 
 
 ?>
