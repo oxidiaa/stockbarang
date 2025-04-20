@@ -1,5 +1,18 @@
 <?php
 session_start();
+
+// Hapus semua data session
+$_SESSION = array();
+
+// Hapus cookie session jika ada
+if (isset($_COOKIE[session_name()])) {
+    setcookie(session_name(), '', time()-3600, '/');
+}
+
+// Hancurkan session
 session_destroy();
-header('location:login.php');
+
+// Redirect ke halaman login dengan pesan
+header('location:login.php?message=logged_out');
+exit();
 ?>

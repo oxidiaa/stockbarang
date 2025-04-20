@@ -1,110 +1,3 @@
-<?php
-session_start();
-require 'function.php';
-
-// Cek apakah user sudah login
-if (!isset($_SESSION['log'])) {
-    header('location:login.php');
-    exit();
-}
-
-// Cek session timeout
-if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
-    session_unset();
-    session_destroy();
-    header('location:login.php?message=timeout');
-    exit();
-}
-$_SESSION['last_activity'] = time();
-
-// Proses form tambah stok solar
-if (isset($_POST['tambahstok']) && $_SESSION['role'] == 'admin') {
-    if (tambahStokSolar($_POST)) {
-        header('location:solar.php');
-        exit();
-    }
-}
-
-// Proses form tambah data solar keluar
-if (isset($_POST['tambah'])) {
-    header('Content-Type: application/json');
-    $response = array();
-    
-    try {
-        // Validasi input
-        if (empty($_POST['forklift'])) {
-            throw new Exception("Forklift harus dipilih");
-        }
-        if (empty($_POST['user'])) {
-            throw new Exception("Nama harus diisi");
-        }
-        if (!isset($_POST['sebelum'])) {
-            throw new Exception("Volume sebelum harus diisi");
-        }
-        if (!isset($_POST['sesudah'])) {
-            throw new Exception("Volume sesudah harus diisi");
-        }
-        
-        $sebelum = floatval($_POST['sebelum']);
-        $sesudah = floatval($_POST['sesudah']);
-        
-        if ($sesudah <= $sebelum) {
-            throw new Exception("Volume sesudah harus lebih besar dari volume sebelum");
-        }
-        
-        if (tambahSolarKeluar($_POST)) {
-            $response['status'] = 'success';
-            $response['message'] = 'Data berhasil ditambahkan';
-        } else {
-            throw new Exception("Gagal menambahkan data");
-        }
-    } catch (Exception $e) {
-        $response['status'] = 'error';
-        $response['message'] = $e->getMessage();
-    }
-    
-    header('Content-Type: application/json');
-    echo json_encode($response);
-    exit;
-}
-
-// Proses form edit data solar keluar
-if (isset($_POST['edit']) && $_SESSION['role'] == 'admin') {
-    if (editSolarKeluar($_POST)) {
-        header('location:solar.php');
-        exit();
-    }
-}
-
-// Proses form hapus data solar keluar
-if (isset($_POST['hapus']) && $_SESSION['role'] == 'admin') {
-    if (hapusSolarKeluar($_POST['id'])) {
-        header('location:solar.php');
-        exit();
-    }
-}
-
-// Ambil data stok solar
-$query = "SELECT stock FROM stock WHERE namabarang = 'Solar'";
-$result = mysqli_query($conn, $query);
-$stokSolar = 0;
-if ($result && mysqli_num_rows($result) > 0) {
-    $row = mysqli_fetch_assoc($result);
-    $stokSolar = $row['stock'];
-}
-
-// Hitung total pengeluaran
-$query = "SELECT SUM(total) as total FROM solar_keluar";
-$result = mysqli_query($conn, $query);
-$totalPengeluaran = 0;
-if ($result && mysqli_num_rows($result) > 0) {
-    $row = mysqli_fetch_assoc($result);
-    $totalPengeluaran = $row['total'] ?? 0;
-}
-
-// Hitung stok tersisa
-$stokTersisa = $stokSolar - $totalPengeluaran;
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -221,6 +114,27 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                             $stokTersisa = $stokSolar - $totalPengeluaran;
                             ?>
 
+                            <!-- Informasi Stok Solar (Admin Only) -->
+                            <?php if ($_SESSION['role'] == 'admin') { ?>
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Informasi Stok Solar
+                                </div>
+                                <div class="card-body">
+                                    <div class="stock-info">
+                                        <p><strong>Stok Solar:</strong> <?php echo number_format($stokSolar, 2); ?> liter</p>
+                                        <p><strong>Total Pengeluaran:</strong> <?php echo number_format($totalPengeluaran, 2); ?> liter</p>
+                                        <p><strong>Stok Tersisa:</strong> <span class="<?php echo $stokTersisa < 0 ? 'text-danger' : ''; ?>"><?php echo number_format($stokTersisa, 2); ?> liter</span></p>
+                                    </div>
+                                    
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tambahStokModal">
+                                        <i class="fas fa-plus"></i> Tambah Stok Solar
+                                    </button>
+                                </div>
+                            </div>
+                            <?php } ?>
+
                             <table id="datatablesSimple" class="table table-bordered">
                                 <thead>
                                     <tr>
@@ -230,7 +144,7 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                                         <th>Nama</th>
                                         <th>Sebelum (Ltr)</th>
                                         <th>Sesudah (Ltr)</th>
-                                        <th>Jumlah solar yang diambil (Ltr)</th>
+                                        <th>Total (Ltr)</th>
                                         <?php if ($_SESSION['role'] == 'admin') { ?>
                                         <th>Aksi</th>
                                         <?php } ?>
@@ -456,13 +370,13 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                         return (parseFloat(data.sesudah) - parseFloat(data.sebelum)).toFixed(2);
                     }}
                     <?php if ($_SESSION['role'] == 'admin') { ?>,
-                    { data: null, render: function(data) {
+                    { data: 'id', render: function(data) {
                         return `
-                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal${data.id}">
-                                <i class="fas fa-edit"></i> Edit
+                            <button type="button" class="btn btn-warning btn-sm" onclick="editData(${data})">
+                                <i class="fas fa-edit"></i>
                             </button>
-                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapusModal${data.id}">
-                                <i class="fas fa-trash"></i> Hapus
+                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteData(${data})">
+                                <i class="fas fa-trash"></i>
                             </button>
                         `;
                     }}
@@ -470,7 +384,7 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                 ]
             });
 
-            // Handle form submission for adding new data
+            // Handle form submission
             $('#formAmbilSolar').on('submit', function(e) {
                 e.preventDefault();
                 
@@ -483,9 +397,8 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
-                            $('#tambahModal').modal('hide');
-                            table.ajax.reload();
-                            alert('Data berhasil ditambahkan');
+                            alert(response.message);
+                            location.reload(); // Reload page to update stock info
                         } else {
                             alert(response.message);
                         }
@@ -495,12 +408,29 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                     }
                 });
             });
+            
+            // Handle edit button click
+            $('.editBtn').on('click', function() {
+                var id = $(this).data('id');
+                var forklift = $(this).data('forklift');
+                var user = $(this).data('user');
+                var sebelum = $(this).data('sebelum');
+                var sesudah = $(this).data('sesudah');
+                
+                $('#id_edit').val(id);
+                $('#forklift_edit').val(forklift);
+                $('#user_edit').val(user);
+                $('#sebelum_edit').val(sebelum);
+                $('#sesudah_edit').val(sesudah);
+                
+                $('#editModal').modal('show');
+            });
 
             // Handle edit form submission
-            $(document).on('submit', '[id^=formEdit]', function(e) {
+            $('#formEditSolar').on('submit', function(e) {
                 e.preventDefault();
+                
                 var formData = $(this).serialize();
-                var modalId = $(this).closest('.modal').attr('id');
                 
                 $.ajax({
                     type: 'POST',
@@ -509,9 +439,9 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
-                            $(`#${modalId}`).modal('hide');
-                            table.ajax.reload();
-                            alert('Data berhasil diupdate');
+                            $('#editModal').modal('hide');
+                            alert(response.message);
+                            location.reload();
                         } else {
                             alert(response.message);
                         }
@@ -522,52 +452,34 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                 });
             });
 
-            // Handle delete confirmation
-            $(document).on('click', '[id^=btnDelete]', function(e) {
-                e.preventDefault();
-                var id = $(this).data('id');
-                var modalId = $(this).closest('.modal').attr('id');
-                
-                $.ajax({
-                    type: 'POST',
-                    url: 'solar.php',
-                    data: {
-                        hapus: true,
-                        id: id
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            $(`#${modalId}`).modal('hide');
-                            table.ajax.reload();
-                            alert('Data berhasil dihapus');
-                        } else {
-                            alert(response.message);
+            // Handle delete button click
+            $('.deleteBtn').on('click', function() {
+                if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                    var id = $(this).data('id');
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: 'solar.php',
+                        data: {
+                            hapus: true,
+                            id: id
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                alert(response.message);
+                                location.reload();
+                            } else {
+                                alert(response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            alert('Terjadi kesalahan: ' + error);
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Terjadi kesalahan: ' + error);
-                    }
-                });
-            });
-
-            // Validation for sesudah value
-            $('input[name="sesudah"]').on('change', function() {
-                var sebelum = parseFloat($('input[name="sebelum"]').val());
-                var sesudah = parseFloat($(this).val());
-                
-                if (sesudah <= sebelum) {
-                    alert('Volume sesudah harus lebih besar dari volume sebelum');
-                    $(this).val('');
+                    });
                 }
             });
         });
-
-        // Function to format date
-        function formatDate(date) {
-            var d = new Date(date);
-            return d.toLocaleString('id-ID');
-        }
     </script>
 </body>
 </html>

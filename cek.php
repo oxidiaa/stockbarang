@@ -10,9 +10,14 @@ $role = $_SESSION['role'] ?? null;
 $currentPage = basename($_SERVER['PHP_SELF']);
 
 // Batasi akses untuk role 'user'
-if ($role === 'user' && $currentPage !== 'solar.php') {
-    // Cegah akses halaman selain solar.php
-    echo "<script>alert('Akses ditolak!'); window.location='solar.php';</script>";
-    exit;
+if ($role === 'user') {
+    // Daftar halaman yang diizinkan untuk user
+    $allowedPages = ['index.php', 'solar.php', 'logout.php'];
+    
+    // Jika halaman saat ini tidak diizinkan, redirect ke beranda
+    if (!in_array($currentPage, $allowedPages)) {
+        header('location:index.php');
+        exit;
+    }
 }
 ?>

@@ -28,25 +28,33 @@ session_start();
                     <div class="nav">   
                             <div class="sb-sidenav-menu-heading">Core</div>
                             <a class="nav-link" href="index.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
                                 Beranda 
                             </a>
                             <a class="nav-link" href="solar.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-gas-pump"></i></div>
                                 Solar
-                            </a>        
-                            <a class="nav-link" href="stock.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            </a>
+                            <?php if ($_SESSION['role'] == 'admin') { ?>
+                            <a class="nav-link" href="stock_solar.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-gas-pump"></i></div>
+                                Stock Solar
+                            </a>
+                            <a class="nav-link active" href="stock.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-boxes"></i></div>
                                 Stock Barang
                             </a>
                             <a class="nav-link" href="masuk.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-download"></i></div>
                                 Barang Masuk
+                            </a>
                             <a class="nav-link" href="keluar.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
                                 Barang Keluar
                             </a>
+                            <?php } ?>
                             <a class="nav-link" href="logout.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
                                 Logout
                             </a>
                         </div> 
