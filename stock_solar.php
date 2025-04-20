@@ -30,7 +30,7 @@
             <i class="fas fa-bars"></i>
         </button>
         <div class="ml-auto">
-            <span class="text-light mr-3">Welcome, <?php echo htmlspecialchars($_SESSION['email']); ?></span>
+            <span class="text-light mr-3">Welcome, <?php echo htmlspecialchars(str_replace('@gmail.com', '', $_SESSION['email'])); ?></span>
             <a href="logout.php" class="btn btn-outline-light btn-sm">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>

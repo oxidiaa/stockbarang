@@ -119,8 +119,8 @@ if (isset($_SESSION['log'])) {
 
         <form method="post" autocomplete="off">
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" name="email" class="form-control" required 
+                <label>Username</label>
+                <input type="text" name="email" class="form-control" required 
                        value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"/>
             </div>
             <div class="form-group">
