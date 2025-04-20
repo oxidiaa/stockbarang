@@ -47,18 +47,53 @@ if (isset($_POST['tambah'])) {
         
         $sebelum = floatval($_POST['sebelum']);
         $sesudah = floatval($_POST['sesudah']);
+        $jumlahDiambil = $sesudah - $sebelum;
         
         if ($sesudah <= $sebelum) {
             throw new Exception("Volume sesudah harus lebih besar dari volume sebelum");
         }
+
+        // Get current stock
+        $queryStok = mysqli_query($conn, "SELECT stock FROM stock_solar WHERE id = 1");
+        $currentStock = 0;
+        if ($row = mysqli_fetch_assoc($queryStok)) {
+            $currentStock = $row['stock'];
+        }
+
+        // Check if enough stock
+        if ($jumlahDiambil > $currentStock) {
+            throw new Exception("Stok solar tidak mencukupi");
+        }
+
+        // Begin transaction
+        mysqli_begin_transaction($conn);
+
+        // Update stock_solar
+        $newStock = $currentStock - $jumlahDiambil;
+        $updateStok = mysqli_query($conn, "UPDATE stock_solar SET stock = $newStock, last_update = NOW() WHERE id = 1");
         
+        if (!$updateStok) {
+            throw new Exception("Gagal mengupdate stok solar");
+        }
+
+        // Log the stock reduction
+        $logQuery = mysqli_query($conn, "INSERT INTO stock_solar_log (tanggal, jumlah, tipe, stock_sebelum, stock_sesudah) 
+                                       VALUES (NOW(), $jumlahDiambil, 'keluar', $currentStock, $newStock)");
+        
+        if (!$logQuery) {
+            throw new Exception("Gagal mencatat log pengambilan solar");
+        }
+
+        // Insert into solar_keluar
         if (tambahSolarKeluar($_POST)) {
+            mysqli_commit($conn);
             $response['status'] = 'success';
             $response['message'] = 'Data berhasil ditambahkan';
         } else {
-            throw new Exception("Gagal menambahkan data");
+            throw new Exception("Gagal menambahkan data pengambilan solar");
         }
     } catch (Exception $e) {
+        mysqli_rollback($conn);
         $response['status'] = 'error';
         $response['message'] = $e->getMessage();
     }
