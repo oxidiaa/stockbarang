@@ -54,6 +54,104 @@ if (isset($_POST['tambahstok']) && $_SESSION['role'] == 'admin') {
     header('location:stock_solar.php');
     exit();
 }
+
+// Proses edit stok solar
+if (isset($_POST['editstok']) && $_SESSION['role'] == 'admin') {
+    $id = $_POST['id'];
+    $tanggal = $_POST['tanggal'];
+    $jumlah = floatval($_POST['jumlah']);
+    $jumlah_lama = floatval($_POST['jumlah_lama']);
+    $tipe = $_POST['tipe'];
+    
+    // Get current stock
+    $queryStok = mysqli_query($conn, "SELECT stock FROM stock_solar WHERE id = 1");
+    $currentStock = 0;
+    if ($row = mysqli_fetch_assoc($queryStok)) {
+        $currentStock = $row['stock'];
+    }
+    
+    // Calculate stock adjustment
+    if ($tipe == 'masuk') {
+        $newStock = $currentStock - $jumlah_lama + $jumlah;
+    } else {
+        $newStock = $currentStock + $jumlah_lama - $jumlah;
+    }
+    
+    if ($newStock < 0) {
+        $_SESSION['error'] = "Stok tidak mencukupi untuk perubahan ini";
+        header('location:stock_solar.php');
+        exit();
+    }
+    
+    mysqli_begin_transaction($conn);
+    
+    try {
+        // Update stock
+        $updateStok = mysqli_query($conn, "UPDATE stock_solar SET stock = $newStock, last_update = '$tanggal' WHERE id = 1");
+        if (!$updateStok) throw new Exception("Gagal mengupdate stok");
+        
+        // Update log
+        $updateLog = mysqli_query($conn, "UPDATE stock_solar_log SET 
+            tanggal = '$tanggal',
+            jumlah = $jumlah,
+            stock_sesudah = $newStock
+            WHERE id = $id");
+        if (!$updateLog) throw new Exception("Gagal mengupdate log");
+        
+        mysqli_commit($conn);
+        $_SESSION['success'] = "Data berhasil diupdate";
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        $_SESSION['error'] = $e->getMessage();
+    }
+    
+    header('location:stock_solar.php');
+    exit();
+}
+
+// Proses hapus stok solar
+if (isset($_POST['hapusstok']) && $_SESSION['role'] == 'admin') {
+    $id = $_POST['id'];
+    $jumlah = floatval($_POST['jumlah']);
+    $tipe = $_POST['tipe'];
+    
+    // Get current stock
+    $queryStok = mysqli_query($conn, "SELECT stock FROM stock_solar WHERE id = 1");
+    $currentStock = 0;
+    if ($row = mysqli_fetch_assoc($queryStok)) {
+        $currentStock = $row['stock'];
+    }
+    
+    // Calculate new stock
+    $newStock = $tipe == 'masuk' ? $currentStock - $jumlah : $currentStock + $jumlah;
+    
+    if ($newStock < 0) {
+        $_SESSION['error'] = "Stok tidak mencukupi untuk menghapus data ini";
+        header('location:stock_solar.php');
+        exit();
+    }
+    
+    mysqli_begin_transaction($conn);
+    
+    try {
+        // Update stock
+        $updateStok = mysqli_query($conn, "UPDATE stock_solar SET stock = $newStock, last_update = NOW() WHERE id = 1");
+        if (!$updateStok) throw new Exception("Gagal mengupdate stok");
+        
+        // Delete log
+        $deleteLog = mysqli_query($conn, "DELETE FROM stock_solar_log WHERE id = $id");
+        if (!$deleteLog) throw new Exception("Gagal menghapus log");
+        
+        mysqli_commit($conn);
+        $_SESSION['success'] = "Data berhasil dihapus";
+    } catch (Exception $e) {
+        mysqli_rollback($conn);
+        $_SESSION['error'] = $e->getMessage();
+    }
+    
+    header('location:stock_solar.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -203,11 +301,16 @@ if (isset($_POST['tambahstok']) && $_SESSION['role'] == 'admin') {
                         </div>
                     </div>
 
-                    <!-- Riwayat Stock Solar -->
+                    <!-- Tabel Data Stock Solar -->
                     <div class="card mb-4">
                         <div class="card-header">
-                            <i class="fas fa-history me-1"></i>
-                            Riwayat Stock Solar
+                            <i class="fas fa-table me-1"></i>
+                            Data Stock Solar
+                            <?php if ($_SESSION['role'] == 'admin') { ?>
+                            <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#tambahModal">
+                                <i class="fas fa-plus"></i> Tambah Stock
+                            </button>
+                            <?php } ?>
                         </div>
                         <div class="card-body">
                             <table id="datatablesSimple" class="table table-bordered">
@@ -219,6 +322,9 @@ if (isset($_POST['tambahstok']) && $_SESSION['role'] == 'admin') {
                                         <th>Jumlah (Ltr)</th>
                                         <th>Stock Sebelum (Ltr)</th>
                                         <th>Stock Sesudah (Ltr)</th>
+                                        <?php if ($_SESSION['role'] == 'admin') { ?>
+                                        <th>Aksi</th>
+                                        <?php } ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -234,7 +340,80 @@ if (isset($_POST['tambahstok']) && $_SESSION['role'] == 'admin') {
                                         <td><?php echo number_format($row['jumlah'], 2); ?></td>
                                         <td><?php echo number_format($row['stock_sebelum'], 2); ?></td>
                                         <td><?php echo number_format($row['stock_sesudah'], 2); ?></td>
+                                        <?php if ($_SESSION['role'] == 'admin') { ?>
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal<?php echo $row['id']; ?>">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapusModal<?php echo $row['id']; ?>">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                        <?php } ?>
                                     </tr>
+
+                                    <!-- Modal Edit -->
+                                    <?php if ($_SESSION['role'] == 'admin') { ?>
+                                    <div class="modal fade" id="editModal<?php echo $row['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editModalLabel">Edit Data Stock Solar</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form action="" method="post">
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                                                        <input type="hidden" name="jumlah_lama" value="<?php echo $row['jumlah']; ?>">
+                                                        <input type="hidden" name="tipe" value="<?php echo $row['tipe']; ?>">
+                                                        <div class="form-group">
+                                                            <label>Tanggal</label>
+                                                            <input type="datetime-local" name="tanggal" class="form-control" 
+                                                                value="<?php echo date('Y-m-d\TH:i', strtotime($row['tanggal'])); ?>" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Jumlah Solar (Liter)</label>
+                                                            <input type="number" step="0.01" name="jumlah" class="form-control" 
+                                                                value="<?php echo $row['jumlah']; ?>" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                        <button type="submit" name="editstok" class="btn btn-primary">Simpan</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Hapus -->
+                                    <div class="modal fade" id="hapusModal<?php echo $row['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="hapusModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="hapusModalLabel">Hapus Data Stock Solar</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <form action="" method="post">
+                                                    <div class="modal-body">
+                                                        <p>Apakah Anda yakin ingin menghapus data ini?</p>
+                                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                                                        <input type="hidden" name="jumlah" value="<?php echo $row['jumlah']; ?>">
+                                                        <input type="hidden" name="tipe" value="<?php echo $row['tipe']; ?>">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                        <button type="submit" name="hapusstok" class="btn btn-danger">Hapus</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php } ?>
                                     <?php } ?>
                                 </tbody>
                             </table>
@@ -258,12 +437,12 @@ if (isset($_POST['tambahstok']) && $_SESSION['role'] == 'admin') {
         </div>
     </div>
 
-    <!-- Modal Tambah Stock Solar -->
-    <div class="modal fade" id="tambahStokModal" tabindex="-1" role="dialog" aria-labelledby="tambahStokModalLabel" aria-hidden="true">
+    <!-- Modal Tambah Stock -->
+    <div class="modal fade" id="tambahModal" tabindex="-1" role="dialog" aria-labelledby="tambahModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="tambahStokModalLabel">Tambah Stock Solar</h5>
+                    <h5 class="modal-title" id="tambahModalLabel">Tambah Stock Solar</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
