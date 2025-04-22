@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 20, 2025 at 04:23 PM
+-- Generation Time: Apr 22, 2025 at 08:58 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -139,7 +139,9 @@ INSERT INTO `solar_keluar` (`id`, `tanggal`, `forklift`, `sebelum`, `sesudah`, `
 (17, '2025-04-13 22:51:28', 'R2', 22, 321, NULL, '2wd'),
 (18, '2025-04-13 22:52:20', 'R2', 321, 442, NULL, 'ryan'),
 (19, '2025-04-14 23:22:38', 'R1', 442, 510, NULL, 'ryan'),
-(20, '2025-04-14 23:36:59', 'R4', 510, 2000, NULL, 'rs');
+(20, '2025-04-14 23:36:59', 'R4', 510, 2000, NULL, 'rs'),
+(23, '2025-04-20 21:41:53', 'R5', 2000, 2122, NULL, 'ryan'),
+(24, '2025-04-22 13:57:01', 'R1', 2122, 2222, NULL, 'Ryan');
 
 -- --------------------------------------------------------
 
@@ -181,7 +183,50 @@ CREATE TABLE `stock` (
 
 INSERT INTO `stock` (`idbarang`, `namabarang`, `deskripsi`, `stock`) VALUES
 (8, 'REFFILL GAS', 'Gas area', 226),
-(11, 'Solar', 'Bahan bakar solar', 12122);
+(11, 'Solar', 'Bahan bakar solar', 14244);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stock_solar`
+--
+
+CREATE TABLE `stock_solar` (
+  `id` int(11) NOT NULL,
+  `stock` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `last_update` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `stock_solar`
+--
+
+INSERT INTO `stock_solar` (`id`, `stock`, `last_update`) VALUES
+(1, 4778.00, '2025-04-22 13:57:01');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stock_solar_log`
+--
+
+CREATE TABLE `stock_solar_log` (
+  `id` int(11) NOT NULL,
+  `tanggal` datetime NOT NULL,
+  `jumlah` decimal(10,2) NOT NULL,
+  `tipe` enum('masuk','keluar') NOT NULL,
+  `stock_sebelum` decimal(10,2) NOT NULL,
+  `stock_sesudah` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `stock_solar_log`
+--
+
+INSERT INTO `stock_solar_log` (`id`, `tanggal`, `jumlah`, `tipe`, `stock_sebelum`, `stock_sesudah`) VALUES
+(1, '2025-04-20 22:22:00', 5000.00, 'masuk', 0.00, 5000.00),
+(3, '2025-04-20 21:41:53', 122.00, 'keluar', 5000.00, 4878.00),
+(4, '2025-04-22 13:57:01', 100.00, 'keluar', 4878.00, 4778.00);
 
 -- --------------------------------------------------------
 
@@ -246,6 +291,18 @@ ALTER TABLE `stock`
   ADD PRIMARY KEY (`idbarang`);
 
 --
+-- Indexes for table `stock_solar`
+--
+ALTER TABLE `stock_solar`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `stock_solar_log`
+--
+ALTER TABLE `stock_solar_log`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -271,7 +328,7 @@ ALTER TABLE `masuk`
 -- AUTO_INCREMENT for table `solar_keluar`
 --
 ALTER TABLE `solar_keluar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `solar_masuk`
@@ -284,6 +341,18 @@ ALTER TABLE `solar_masuk`
 --
 ALTER TABLE `stock`
   MODIFY `idbarang` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `stock_solar`
+--
+ALTER TABLE `stock_solar`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `stock_solar_log`
+--
+ALTER TABLE `stock_solar_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
