@@ -235,6 +235,29 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                             <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#tambahModal">
                                 <i class="fas fa-plus"></i> Ambil Solar
                             </button>
+                            <div class="card-body">
+                            <?php
+                            // Get current stock
+                            $queryStok = mysqli_query($conn, "SELECT * FROM stock_solar WHERE id = 1");
+                            $stokSolar = 0;
+                            $lastUpdate = '';
+                            if ($row = mysqli_fetch_assoc($queryStok)) {
+                                $stokSolar = $row['stock'];
+                                $lastUpdate = $row['last_update'];
+                            }
+
+                            // Get total pengeluaran
+                            $queryPengeluaran = mysqli_query($conn, "SELECT SUM(jumlah) as total FROM stock_solar_log WHERE tipe = 'keluar'");
+                            $totalPengeluaran = 0;
+                            if ($row = mysqli_fetch_assoc($queryPengeluaran)) {
+                                $totalPengeluaran = $row['total'] ?: 0;
+                            }
+                            ?>
+                            <div class="stock-info">
+                                <p><strong>Stock Solar:</strong> <?php echo number_format($stokSolar, 2); ?> liter</p>
+                                <p><strong>Total Pengeluaran:</strong> <?php echo number_format($totalPengeluaran, 2); ?> liter</p>
+                            </div>
+                        </div>
                         </div>
                         <div class="card-body">
                             <?php

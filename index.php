@@ -33,10 +33,17 @@ $_SESSION['last_activity'] = time();
         body {
             min-height: 100vh;
             background-color: #f8f9fa;
+            background-image: url('assets/img/mai.JPG');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
         }
         .card {
             transition: transform 0.2s;
             margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0);
+            backdrop-filter: blur(5px);
         }
         .card:hover {
             transform: translateY(-5px);
@@ -50,10 +57,23 @@ $_SESSION['last_activity'] = time();
             font-weight: bold;
         }
         .sb-sidenav-dark {
-            background-color: #212529;
+            background-color: rgba(33, 37, 41, 0.85);
         }
         .sb-sidenav-footer {
-            background-color: #343a40;
+            background-color: rgba(52, 58, 64, 0.85);
+        }
+        .container-fluid {
+            background-color: rgba(255, 255, 255, 0);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .sb-topnav {
+            background-color: rgba(52, 58, 64, 0.85) !important;
+        }
+        .card-body {
+            background-color: rgba(255, 255, 255, 0);
         }
     </style>
 </head>
@@ -125,10 +145,8 @@ $_SESSION['last_activity'] = time();
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid px-4">
-                    <h1 class="mt-4">Dashboard</h1>
-                    <ol class="breadcrumb mb-4">
-                        <li class="breadcrumb-item active">Dashboard</li>
-                    </ol>
+                    <h1 class="mt-4"></h1>
+                    
 
                     <div class="row">
                         <?php if ($_SESSION['role'] == 'admin') { ?>
