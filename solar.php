@@ -247,7 +247,7 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                             }
 
                             // Get total pengeluaran
-                            $queryPengeluaran = mysqli_query($conn, "SELECT SUM(jumlah) as total FROM stock_solar_log WHERE tipe = 'keluar'");
+                            $queryPengeluaran = mysqli_query($conn, "SELECT SUM(jumlah) as total FROM stock_solar_log WHERE tipe = 'keluar' and month(tanggal) = ".date('n'));
                             $totalPengeluaran = 0;
                             if ($row = mysqli_fetch_assoc($queryPengeluaran)) {
                                 $totalPengeluaran = $row['total'] ?: 0;
@@ -256,6 +256,31 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                             <div class="stock-info">
                                 <p><strong>Stock Solar:</strong> <?php echo number_format($stokSolar, 2); ?> liter</p>
                                 <p><strong>Total Pengeluaran:</strong> <?php echo number_format($totalPengeluaran, 2); ?> liter</p>
+                                
+                                <!-- DROP DOWN -->
+                                 
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownbulan" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Dropdown Bulan
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownbulan">
+                                        <a class="dropdown-item" href="#">Action</a>
+                                        <a class="dropdown-item" href="#">Another action</a>
+                                        <a class="dropdown-item" href="#">Something else here</a>
+                                    </div>
+                                </div>
+
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdowntahun" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Dropdown Tahun
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdowntahun">
+                                        <a class="dropdown-item" href="#">Action</a>
+                                        <a class="dropdown-item" href="#">Another action</a>
+                                        <a class="dropdown-item" href="#">Something else here</a>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         </div>
