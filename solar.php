@@ -261,23 +261,35 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                             <div style="display: flex; gap: calc(20px + 30px); ">
                                 <div class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownbulan" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Dropdown Bulan
+                                        Pilih Bulan
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownbulan">
-                                        <a class="dropdown-item" href="#">Action</a>
-                                        <a class="dropdown-item" href="#">Another action</a>
-                                        <a class="dropdown-item" href="#">Something else here</a>
+                                        <a class="dropdown-item" href="#" data-month="1">Januari</a>
+                                        <a class="dropdown-item" href="#" data-month="2">Februari</a>
+                                        <a class="dropdown-item" href="#" data-month="3">Maret</a>
+                                        <a class="dropdown-item" href="#" data-month="4">April</a>
+                                        <a class="dropdown-item" href="#" data-month="5">Mei</a>
+                                        <a class="dropdown-item" href="#" data-month="6">Juni</a>
+                                        <a class="dropdown-item" href="#" data-month="7">Juli</a>
+                                        <a class="dropdown-item" href="#" data-month="8">Agustus</a>
+                                        <a class="dropdown-item" href="#" data-month="9">September</a>
+                                        <a class="dropdown-item" href="#" data-month="10">Oktober</a>
+                                        <a class="dropdown-item" href="#" data-month="11">November</a>
+                                        <a class="dropdown-item" href="#" data-month="12">Desember</a>
                                     </div>
                                 </div>
 
                                 <div class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdowntahun" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Dropdown Tahun
+                                        Pilih Tahun
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdowntahun">
-                                        <a class="dropdown-item" href="#">Action</a>
-                                        <a class="dropdown-item" href="#">Another action</a>
-                                        <a class="dropdown-item" href="#">Something else here</a>
+                                        <?php
+                                        $currentYear = date('Y');
+                                        for($i = $currentYear; $i >= $currentYear - 3; $i--) {
+                                            echo "<a class='dropdown-item' href='#' data-year='$i'>$i</a>";
+                                        }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
@@ -514,6 +526,13 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
     <script>
         $(document).ready(function() {
+            var selectedYear = new Date().getFullYear();
+            var selectedMonth = new Date().getMonth() + 1;
+            
+            // Update dropdown button text
+            $('#dropdowntahun').text('Tahun: ' + selectedYear);
+            $('#dropdownbulan').text('Bulan: ' + getMonthName(selectedMonth));
+
             var table = $('#datatablesSimple').DataTable({
                 order: [[1, 'desc']], // Sort by date column
                 orderClasses: false,
@@ -521,6 +540,10 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                 serverSide: false,
                 ajax: {
                     url: 'get_solar_data.php',
+                    data: function(d) {
+                        d.year = selectedYear;
+                        d.month = selectedMonth;
+                    },
                     dataSrc: ''
                 },
                 columns: [
@@ -553,6 +576,31 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                     <?php } ?>
                 ]
             });
+
+            // Handle year selection
+            $('.dropdown-menu[aria-labelledby="dropdowntahun"] .dropdown-item').click(function(e) {
+                e.preventDefault();
+                selectedYear = $(this).data('year');
+                $('#dropdowntahun').text('Tahun: ' + selectedYear);
+                table.ajax.reload();
+            });
+
+            // Handle month selection
+            $('.dropdown-menu[aria-labelledby="dropdownbulan"] .dropdown-item').click(function(e) {
+                e.preventDefault();
+                selectedMonth = $(this).data('month');
+                $('#dropdownbulan').text('Bulan: ' + getMonthName(selectedMonth));
+                table.ajax.reload();
+            });
+
+            // Function to get month name
+            function getMonthName(month) {
+                const months = [
+                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                ];
+                return months[month - 1];
+            }
 
             // Handle form submission for adding new data
             $('#formAmbilSolar').on('submit', function(e) {
