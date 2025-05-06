@@ -163,6 +163,47 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
         .stock-warning {
             color: #dc3545;
         }
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .stock-info {
+                font-size: 1em;
+            }
+            .dropdown-container {
+                flex-direction: column;
+                gap: 10px !important;
+            }
+            .dropdown-container .dropdown {
+                width: 100%;
+            }
+            .dropdown-container .dropdown .btn {
+                width: 100%;
+                text-align: left;
+            }
+            .table-responsive {
+                margin-top: 15px;
+            }
+            .btn-group-sm .btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+            .card-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .card-header .btn {
+                width: 100%;
+            }
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_filter {
+                text-align: left;
+                margin-bottom: 10px;
+            }
+            .dataTables_wrapper .dataTables_info,
+            .dataTables_wrapper .dataTables_paginate {
+                text-align: center;
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 <body class="sb-nav-fixed">
@@ -173,9 +214,6 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
         </button>
         <div class="ml-auto">
             <span class="text-light mr-3">Welcome, <?php echo htmlspecialchars(str_replace('@gmail.com', '', $_SESSION['email'])); ?></span>
-            <a href="logout.php" class="btn btn-outline-light btn-sm">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
         </div>
     </nav>
     <div id="layoutSidenav">
@@ -215,6 +253,11 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                 <div class="sb-sidenav-footer">
                     <div class="small">MetalArt Astra Indonesia</div>
                     Ryan Pratama | 240040
+                    <div class="mt-3">
+                        <a href="logout.php" class="btn btn-outline-light btn-sm w-100">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -255,86 +298,69 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                             ?>
                             <div class="stock-info">
                                 <p><strong>Stock Solar:</strong> <?php echo number_format($stokSolar, 2); ?> liter</p>
-                                <p><strong>Total Pengeluaran:</strong> <?php echo number_format($totalPengeluaran, 2); ?> liter</p>
+                                <p><strong>Total Pengeluaran:</strong> <span id="totalPengeluaran">0.00</span> liter</p>
                                 
                                 <!-- DROP DOWN -->
-                            <div style="display: flex; gap: calc(20px + 30px); ">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownbulan" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Pilih Bulan
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownbulan">
-                                        <a class="dropdown-item" href="#" data-month="1">Januari</a>
-                                        <a class="dropdown-item" href="#" data-month="2">Februari</a>
-                                        <a class="dropdown-item" href="#" data-month="3">Maret</a>
-                                        <a class="dropdown-item" href="#" data-month="4">April</a>
-                                        <a class="dropdown-item" href="#" data-month="5">Mei</a>
-                                        <a class="dropdown-item" href="#" data-month="6">Juni</a>
-                                        <a class="dropdown-item" href="#" data-month="7">Juli</a>
-                                        <a class="dropdown-item" href="#" data-month="8">Agustus</a>
-                                        <a class="dropdown-item" href="#" data-month="9">September</a>
-                                        <a class="dropdown-item" href="#" data-month="10">Oktober</a>
-                                        <a class="dropdown-item" href="#" data-month="11">November</a>
-                                        <a class="dropdown-item" href="#" data-month="12">Desember</a>
+                                <div class="dropdown-container" style="display: flex; gap: 20px;">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownbulan" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Pilih Bulan
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownbulan">
+                                            <a class="dropdown-item" href="#" data-month="1">Januari</a>
+                                            <a class="dropdown-item" href="#" data-month="2">Februari</a>
+                                            <a class="dropdown-item" href="#" data-month="3">Maret</a>
+                                            <a class="dropdown-item" href="#" data-month="4">April</a>
+                                            <a class="dropdown-item" href="#" data-month="5">Mei</a>
+                                            <a class="dropdown-item" href="#" data-month="6">Juni</a>
+                                            <a class="dropdown-item" href="#" data-month="7">Juli</a>
+                                            <a class="dropdown-item" href="#" data-month="8">Agustus</a>
+                                            <a class="dropdown-item" href="#" data-month="9">September</a>
+                                            <a class="dropdown-item" href="#" data-month="10">Oktober</a>
+                                            <a class="dropdown-item" href="#" data-month="11">November</a>
+                                            <a class="dropdown-item" href="#" data-month="12">Desember</a>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdowntahun" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Pilih Tahun
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdowntahun">
-                                        <?php
-                                        $currentYear = date('Y');
-                                        for($i = $currentYear; $i >= $currentYear - 3; $i--) {
-                                            echo "<a class='dropdown-item' href='#' data-year='$i'>$i</a>";
-                                        }
-                                        ?>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdowntahun" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Pilih Tahun
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdowntahun">
+                                            <?php
+                                            $currentYear = date('Y');
+                                            for($i = $currentYear; $i >= $currentYear - 3; $i--) {
+                                                echo "<a class='dropdown-item' href='#' data-year='$i'>$i</a>";
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
                             </div>
                         </div>
                         </div>
                         <div class="card-body">
-                            <?php
-                            // Get total stok solar
-                            $queryStok = mysqli_query($conn, "SELECT stock FROM stock WHERE namabarang = 'Solar'");
-                            $stokSolar = 0;
-                            if ($row = mysqli_fetch_assoc($queryStok)) {
-                                $stokSolar = $row['stock'];
-                            }
-
-                            // Get total pengeluaran
-                            $queryPengeluaran = mysqli_query($conn, "SELECT SUM(sesudah) as total FROM solar_keluar");
-                            $totalPengeluaran = 0;
-                            if ($row = mysqli_fetch_assoc($queryPengeluaran)) {
-                                $totalPengeluaran = $row['total'] ?: 0;
-                            }
-
-                            // Hitung stok tersisa
-                            $stokTersisa = $stokSolar - $totalPengeluaran;
-                            ?>
-
-                            <table id="datatablesSimple" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Tanggal</th>
-                                        <th>Forklift</th>
-                                        <th>Nama</th>
-                                        <th>Sebelum (Ltr)</th>
-                                        <th>Sesudah (Ltr)</th>
-                                        <th>Jumlah solar yang diambil (Ltr)</th>
-                                        <?php if ($_SESSION['role'] == 'admin') { ?>
-                                        <th>Aksi</th>
-                                        <?php } ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                            <div class="table-responsive">
+                                <table id="datatablesSimple" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Tanggal</th>
+                                            <th>Forklift</th>
+                                            <th>Nama</th>
+                                            <th>Sebelum (Ltr)</th>
+                                            <th>Sesudah (Ltr)</th>
+                                            <th>Jumlah (Ltr)</th>
+                                            <?php if ($_SESSION['role'] == 'admin') { ?>
+                                            <th>Aksi</th>
+                                            <?php } ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -538,13 +564,32 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                 orderClasses: false,
                 processing: true,
                 serverSide: false,
+                responsive: true,
+                language: {
+                    search: "Cari:",
+                    lengthMenu: "Tampilkan _MENU_ data per halaman",
+                    zeroRecords: "Data tidak ditemukan",
+                    info: "Menampilkan halaman _PAGE_ dari _PAGES_",
+                    infoEmpty: "Tidak ada data yang tersedia",
+                    infoFiltered: "(difilter dari _MAX_ total data)",
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Selanjutnya",
+                        previous: "Sebelumnya"
+                    }
+                },
                 ajax: {
                     url: 'get_solar_data.php',
                     data: function(d) {
                         d.year = selectedYear;
                         d.month = selectedMonth;
                     },
-                    dataSrc: ''
+                    dataSrc: function(json) {
+                        // Update total pengeluaran
+                        $('#totalPengeluaran').text(json.total_pengeluaran);
+                        return json.data;
+                    }
                 },
                 columns: [
                     { data: null, render: function (data, type, row, meta) {
@@ -565,12 +610,14 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                     <?php if ($_SESSION['role'] == 'admin') { ?>,
                     { data: null, render: function(data) {
                         return `
-                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal${data.id}">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapusModal${data.id}">
-                                <i class="fas fa-trash"></i> Hapus
-                            </button>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editModal${data.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#hapusModal${data.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                         `;
                     }}
                     <?php } ?>

@@ -270,9 +270,7 @@ if (isset($_POST['hapusstok']) && $_SESSION['role'] == 'admin') {
                             <i class="fas fa-info-circle me-1"></i>
                             Informasi Stock Solar
                             <?php if ($_SESSION['role'] == 'admin') { ?>
-                            <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#tambahStokModal">
-                                <i class="fas fa-plus"></i> Tambah Stock Solar
-                            </button>
+                            
                             <?php } ?>
                         </div>
                         <div class="card-body">

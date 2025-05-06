@@ -13,6 +13,15 @@ mysqli_stmt_bind_param($stmt, "ii", $year, $month);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
+// Calculate total pengeluaran for the selected month and year
+$queryTotal = "SELECT SUM(sesudah - sebelum) as total FROM solar_keluar WHERE YEAR(tanggal) = ? AND MONTH(tanggal) = ?";
+$stmtTotal = mysqli_prepare($conn, $queryTotal);
+mysqli_stmt_bind_param($stmtTotal, "ii", $year, $month);
+mysqli_stmt_execute($stmtTotal);
+$totalResult = mysqli_stmt_get_result($stmtTotal);
+$totalRow = mysqli_fetch_assoc($totalResult);
+$totalPengeluaran = $totalRow['total'] ?: 0;
+
 $data = array();
 while ($row = mysqli_fetch_assoc($result)) {
     // Format the date
@@ -20,7 +29,12 @@ while ($row = mysqli_fetch_assoc($result)) {
     $data[] = $row;
 }
 
-// Return JSON response
+// Return JSON response with total pengeluaran
+$response = array(
+    'data' => $data,
+    'total_pengeluaran' => number_format($totalPengeluaran, 2)
+);
+
 header('Content-Type: application/json');
-echo json_encode($data);
+echo json_encode($response);
 ?> 

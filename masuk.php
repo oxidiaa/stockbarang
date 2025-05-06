@@ -18,17 +18,22 @@ require 'cek.php';
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <a class="navbar-brand" href="index.php">MetalArt Astra Indonesia</a>
-            <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+            <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="ml-auto">
+                <span class="text-light mr-3">Welcome, <?php echo htmlspecialchars(str_replace('@gmail.com', '', $_SESSION['email'])); ?></span>
+            </div>
         </nav>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
-                    <div class="nav">   
+                        <div class="nav">
                             <div class="sb-sidenav-menu-heading">Core</div>
                             <a class="nav-link" href="index.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
-                                Beranda 
+                                Beranda
                             </a>
                             <a class="nav-link" href="solar.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-gas-pump"></i></div>
@@ -36,7 +41,7 @@ require 'cek.php';
                             </a>
                             <?php if ($_SESSION['role'] == 'admin') { ?>
                             <a class="nav-link" href="stock_solar.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-gas-pump"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-warehouse"></i></div>
                                 Stock Solar
                             </a>
                             <a class="nav-link" href="stock.php">
@@ -52,15 +57,16 @@ require 'cek.php';
                                 Barang Keluar
                             </a>
                             <?php } ?>
-                            <a class="nav-link" href="logout.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
-                                Logout
-                            </a>
-                        </div> 
+                        </div>
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">MetalArt Astra Indonesia</div>
                         Ryan Pratama | 240040
+                        <div class="mt-3">
+                            <a href="logout.php" class="btn btn-outline-light btn-sm w-100">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
                     </div>
                 </nav>
             </div>  

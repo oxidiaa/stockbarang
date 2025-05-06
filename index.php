@@ -84,10 +84,7 @@ $_SESSION['last_activity'] = time();
             <i class="fas fa-bars"></i>
         </button>
         <div class="ml-auto">
-            <span class="text-light mr-3">Welcome, <?php echo htmlspecialchars($_SESSION['email']); ?></span>
-            <a href="logout.php" class="btn btn-outline-light btn-sm">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
+            <span class="text-light mr-3">Welcome, <?php echo htmlspecialchars(str_replace('@gmail.com', '', $_SESSION['email'])); ?></span>
         </div>
     </nav>
 
@@ -101,12 +98,11 @@ $_SESSION['last_activity'] = time();
                             <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
                             Beranda
                         </a>
-                        
-                        <?php if ($_SESSION['role'] == 'admin') { ?>
                         <a class="nav-link" href="solar.php">
                             <div class="sb-nav-link-icon"><i class="fas fa-gas-pump"></i></div>
                             Solar
                         </a>
+                        <?php if ($_SESSION['role'] == 'admin') { ?>
                         <a class="nav-link" href="stock_solar.php">
                             <div class="sb-nav-link-icon"><i class="fas fa-warehouse"></i></div>
                             Stock Solar
@@ -123,21 +119,17 @@ $_SESSION['last_activity'] = time();
                             <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
                             Barang Keluar
                         </a>
-                        <?php } else { ?>
-                        <a class="nav-link" href="solar.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-gas-pump"></i></div>
-                            Solar
-                        </a>
-                        <a class="nav-link" href="stock_solar.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-warehouse"></i></div>
-                            Stock Solar
-                        </a>
                         <?php } ?>
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
                     <div class="small">MetalArt Astra Indonesia</div>
                     Ryan Pratama | 240040
+                    <div class="mt-3">
+                        <a href="logout.php" class="btn btn-outline-light btn-sm w-100">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
                 </div>
             </nav>
         </div>
