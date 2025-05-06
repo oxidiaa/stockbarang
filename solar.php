@@ -258,7 +258,7 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                                 <p><strong>Total Pengeluaran:</strong> <?php echo number_format($totalPengeluaran, 2); ?> liter</p>
                                 
                                 <!-- DROP DOWN -->
-                                 
+                            <div style="display: flex; gap: calc(20px + 30px); ">
                                 <div class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownbulan" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Dropdown Bulan
@@ -280,6 +280,7 @@ $stokTersisa = $stokSolar - $totalPengeluaran;
                                         <a class="dropdown-item" href="#">Something else here</a>
                                     </div>
                                 </div>
+                            </div>
 
                             </div>
                         </div>
